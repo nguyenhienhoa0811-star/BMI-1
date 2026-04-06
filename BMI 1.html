@@ -8,17 +8,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --primary-light: #d1fae5;
-            --bg: #f1f5f9;
+            /* Tông màu Y tế - Chuyên nghiệp, Tin cậy */
+            --primary: #0284c7;        /* Medical Blue */
+            --primary-dark: #0369a1;   /* Deep Medical Blue */
+            --primary-light: #e0f2fe;  /* Soft Blue Background */
+            --accent: #0ea5e9;         /* Highlight Blue */
+            
+            --bg: #f8fafc;
             --card: #ffffff;
             --text-main: #0f172a;
-            --text-muted: #64748b;
+            --text-muted: #475569;
+            
             --danger: #ef4444;
             --danger-bg: #fef2f2;
             --warning: #f59e0b;
             --warning-bg: #fffbeb;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            
             --border: #e2e8f0;
         }
 
@@ -39,53 +46,69 @@
             padding: 40px 50px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border-top: 8px solid var(--primary);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed var(--border);
         }
         .header h1 {
             color: var(--primary-dark);
             font-size: 28px;
             font-weight: 800;
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             letter-spacing: -0.5px;
+            text-transform: uppercase;
         }
         .header p {
             color: var(--text-muted);
-            font-size: 15px;
+            font-size: 16px;
+            font-weight: 500;
             margin: 0;
         }
 
         .section-title {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 800;
-            color: var(--text-main);
+            color: var(--primary-dark);
             text-transform: uppercase;
             margin: 30px 0 20px 0;
             display: flex;
             align-items: center;
-            border-bottom: 2px solid var(--bg);
             padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
         }
         .section-title::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
+            content: '+';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
             height: 24px;
             background: var(--primary);
+            color: white;
             margin-right: 12px;
             border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
         }
 
         .grid-inputs {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
+        .grid-inputs-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
         .input-box { display: flex; flex-direction: column; }
+        .input-box.full-width { grid-column: 1 / -1; }
+        
         label { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
         input, select {
             padding: 12px 16px;
@@ -95,6 +118,7 @@
             color: var(--text-main);
             background: #f8fafc;
             transition: all 0.2s ease;
+            font-family: inherit;
         }
         input:focus, select:focus {
             outline: none;
@@ -114,24 +138,42 @@
             width: 100%;
             transition: 0.3s ease;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .btn-calc { background: var(--primary); margin-top: 10px; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2); }
+        .btn-calc { background: var(--primary); margin-top: 20px; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2); }
         .btn-calc:hover { background: var(--primary-dark); transform: translateY(-2px); }
-        .btn-pdf { background: var(--text-main); margin-top: 30px; }
-        .btn-pdf:hover { background: #000; }
+        
+        .btn-pdf { background: #0f172a; margin-top: 30px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-pdf:hover { background: #1e293b; }
 
         /* Report Styles */
-        #result-area { display: none; padding-top: 20px; border-top: 2px dashed var(--border); margin-top: 40px; }
+        #result-area { display: none; margin-top: 10px; }
+        #pdf-export-container { padding: 20px; background: white; }
         
-        .client-info-header {
+        /* Cấu trúc Header PDF chuyên nghiệp */
+        .pdf-banner {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 25px 20px;
+            border-radius: 12px 12px 0 0;
             text-align: center;
-            background: var(--bg);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
         }
-        .client-info-header h2 { color: var(--primary-dark); margin: 0 0 5px 0; font-size: 22px; }
-        .client-info-header p { margin: 0; font-size: 14px; color: var(--text-muted); }
+        .pdf-banner h2 { margin: 0 0 5px 0; font-size: 24px; letter-spacing: 1px; }
+        .pdf-banner p { margin: 0; opacity: 0.9; font-size: 14px; }
+
+        .client-info-grid {
+            background: var(--primary-light);
+            padding: 20px;
+            border-radius: 0 0 12px 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .client-info-item { display: flex; gap: 8px; }
+        .client-info-item strong { color: var(--primary-dark); min-width: 100px; }
 
         .status-badge {
             padding: 16px;
@@ -141,7 +183,7 @@
             font-size: 15px;
             margin-bottom: 20px;
         }
-        .healthy { background: var(--primary-light); color: var(--primary-dark); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .healthy { background: var(--success-bg); color: #065f46; border: 1px solid rgba(16, 185, 129, 0.2); }
         .alert { background: var(--danger-bg); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.2); }
         .warn { background: var(--warning-bg); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.2); }
 
@@ -149,9 +191,9 @@
             background: #f8fafc;
             padding: 20px;
             border-radius: 12px;
-            border-left: 6px solid var(--primary);
+            border-left: 6px solid var(--accent);
             margin-bottom: 25px;
-            font-size: 14px;
+            font-size: 14.5px;
             line-height: 1.7;
         }
 
@@ -168,43 +210,56 @@
             text-align: center;
             border: 1px solid var(--border);
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .macro-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--primary);
         }
         .macro-card label { display: block; font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
-        .macro-card span { display: block; font-size: 24px; font-weight: 800; color: var(--primary-dark); line-height: 1; }
-        .macro-card small { font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block; }
+        .macro-card span { display: block; font-size: 26px; font-weight: 800; color: var(--primary-dark); line-height: 1; }
+        .macro-card small { font-size: 12px; color: var(--text-muted); margin-top: 8px; display: block; background: var(--bg); padding: 4px; border-radius: 4px;}
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; font-size: 13.5px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-        th { background: #f8fafc; color: var(--text-muted); padding: 14px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 12px; border-bottom: 1px solid var(--border); }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; font-size: 14px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        th { background: var(--primary-light); color: var(--primary-dark); padding: 14px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid var(--primary); }
         td { padding: 14px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: top; line-height: 1.6; }
         tr:last-child td { border-bottom: none; }
         
-        .day-row td { background: var(--bg); font-weight: 600; color: var(--text-main); text-align: center; }
-        .week-separator td { background: var(--text-main); color: white; text-align: center; font-size: 12px; font-weight: 700; padding: 8px; letter-spacing: 1px; }
+        .day-row td { background: var(--bg); font-weight: 600; color: var(--primary-dark); text-align: center; border-right: 1px solid var(--border); }
+        .week-separator td { background: var(--primary-dark); color: white; text-align: center; font-size: 13px; font-weight: 700; padding: 10px; letter-spacing: 1px; text-transform: uppercase; }
 
         .golden-rules {
             margin-top: 35px;
-            background: #f8fafc;
-            border: 1px solid var(--border);
+            background: #fff;
+            border: 2px solid var(--primary-light);
             border-radius: 16px;
             padding: 25px;
         }
-        .golden-rules h3 { margin: 0 0 15px 0; color: var(--warning); font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .golden-rules ul { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text-main); }
-        .golden-rules li { margin-bottom: 10px; }
+        .golden-rules h3 { margin: 0 0 15px 0; color: var(--primary-dark); font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        .golden-rules ul { margin: 0; padding-left: 20px; font-size: 14px; color: var(--text-main); line-height: 1.8; }
+        .golden-rules li::marker { color: var(--primary); font-weight: bold; }
 
-        /* Tối ưu xuất in ấn PDF */
+        /* TỐI ƯU CLASS ĐỂ TRÁNH CẮT TRANG PDF (CRITICAL FIX) */
+        .keep-together {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        /* TỐI ƯU CHO XUẤT IN PDF */
         @media print {
-            body, .container { background: white !important; padding: 0 !important; box-shadow: none !important; max-width: 100%; margin: 0; }
+            body, .container { background: white !important; padding: 0 !important; box-shadow: none !important; max-width: 100%; margin: 0; border: none; }
             .no-print { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            #pdf-export-container { padding: 10px; }
+            #pdf-export-container { padding: 0; width: 100%; }
             
-            /* Ngăn chặn bị cắt nội dung ngang trang */
-            tr, .macro-card, .strategy-box, .status-badge, .client-info-header { page-break-inside: avoid; }
-            h1, h2, h3, .section-title { page-break-after: avoid; }
-            table { page-break-inside: auto; }
+            /* Ngăn chặn bị cắt ngang trang */
+            tr, .macro-card, .strategy-box, .status-badge, .keep-together { 
+                page-break-inside: avoid !important; 
+                break-inside: avoid !important;
+            }
+            h1, h2, h3, .section-title { page-break-after: avoid !important; break-after: avoid !important; }
+            table { page-break-inside: auto !important; }
             
-            /* Căn lề lại cho PDF */
             .macro-container { gap: 10px; }
             .macro-card { padding: 15px 10px; }
             td, th { padding: 10px; font-size: 12px; }
@@ -215,30 +270,51 @@
 
 <div class="container">
     <div class="header no-print">
-        <h1>PROSPERITY HEALTH SYSTEM</h1>
-        <p>Hệ Thống Thiết Lập Vóc Dáng & Kỷ Luật Sức Khoẻ</p>
+        <h1>HỆ THỐNG SỨC KHỎE TOÀN DIỆN</h1>
+        <p>Phân tích chỉ số & Thiết lập lộ trình 28 ngày</p>
     </div>
 
     <div class="no-print">
-        <div class="section-title">I. Thiết lập chỉ số cá nhân</div>
-        <div class="input-box" style="margin-bottom: 20px;">
-            <label>Họ và Tên khách hàng</label>
-            <input type="text" id="custName" placeholder="Ví dụ: Nguyễn Văn A...">
-        </div>
+        <div class="section-title">I. Thông tin khách hàng & Chỉ số cá nhân</div>
         
         <div class="grid-inputs">
-            <div class="input-box"><label>Chiều cao (cm)</label><input type="number" id="height" value="165"></div>
-            <div class="input-box"><label>Cân nặng (kg)</label><input type="number" id="weight" value="65"></div>
-            <div class="input-box"><label>Tuổi</label><input type="number" id="age" value="30"></div>
+            <div class="input-box full-width">
+                <label>Họ và Tên khách hàng</label>
+                <input type="text" id="custName" placeholder="Ví dụ: Nguyễn Văn A...">
+            </div>
+        </div>
+
+        <div class="grid-inputs grid-inputs-3">
+            <div class="input-box">
+                <label>Sinh ngày</label>
+                <input type="date" id="dob">
+            </div>
+            <div class="input-box">
+                <label>Số điện thoại</label>
+                <input type="tel" id="phone" placeholder="Ví dụ: 0901234567">
+            </div>
             <div class="input-box">
                 <label>Giới tính</label>
                 <select id="gender"><option value="male">Nam</option><option value="female">Nữ</option></select>
             </div>
         </div>
+        
+        <div class="grid-inputs">
+            <div class="input-box full-width">
+                <label>Địa chỉ liên hệ</label>
+                <input type="text" id="address" placeholder="Ví dụ: Quận 1, TP. Hồ Chí Minh...">
+            </div>
+        </div>
+
+        <div class="grid-inputs grid-inputs-3">
+            <div class="input-box"><label>Chiều cao (cm)</label><input type="number" id="height" value="165"></div>
+            <div class="input-box"><label>Cân nặng (kg)</label><input type="number" id="weight" value="65"></div>
+            <div class="input-box"><label>Tuổi</label><input type="number" id="age" value="30"></div>
+        </div>
 
         <div class="grid-inputs">
             <div class="input-box">
-                <label>Mức độ vận động</label>
+                <label>Mức độ vận động hiện tại</label>
                 <select id="activity">
                     <option value="1.2">Ít vận động (Văn phòng, không tập)</option>
                     <option value="1.375">Vận động nhẹ (Tập 1-2 buổi/tuần)</option>
@@ -247,7 +323,7 @@
                 </select>
             </div>
             <div class="input-box">
-                <label>Mục tiêu 28 ngày</label>
+                <label>Mục tiêu mong muốn (28 Ngày)</label>
                 <select id="goal">
                     <option value="-500">Giảm mỡ thần tốc (-500 kcal)</option>
                     <option value="-300">Giảm cân bền vững (-300 kcal)</option>
@@ -262,15 +338,23 @@
 
     <div id="result-area">
         <div id="pdf-export-container">
-            <div class="client-info-header">
-                <h2>LỘ TRÌNH 28 NGÀY THAY ĐỔI VÓC DÁNG</h2>
-                <p>Khách hàng: <strong id="outName" style="color: var(--text-main);"></strong> | Ngày lập: <strong id="currentDate"></strong></p>
+            <div class="pdf-banner keep-together">
+                <h2>LỘ TRÌNH 28 NGÀY CHUYỂN HÓA VÓC DÁNG</h2>
+                <p>Prosperity Health & Wellness System</p>
+            </div>
+            
+            <div class="client-info-grid keep-together">
+                <div class="client-info-item"><strong>Khách hàng:</strong> <span id="outName"></span></div>
+                <div class="client-info-item"><strong>Ngày lập:</strong> <span id="currentDate"></span></div>
+                <div class="client-info-item"><strong>Sinh ngày:</strong> <span id="outDob"></span></div>
+                <div class="client-info-item"><strong>Điện thoại:</strong> <span id="outPhone"></span></div>
+                <div class="client-info-item" style="grid-column: 1 / -1;"><strong>Địa chỉ:</strong> <span id="outAddress"></span></div>
             </div>
 
-            <div id="bmiStatus"></div>
-            <div class="strategy-box" id="strategyDesc"></div>
+            <div id="bmiStatus" class="keep-together"></div>
+            <div class="strategy-box keep-together" id="strategyDesc"></div>
 
-            <div class="macro-container">
+            <div class="macro-container keep-together">
                 <div class="macro-card">
                     <label>Ngân sách Năng lượng</label>
                     <span id="outCal">0</span>
@@ -288,51 +372,63 @@
                 </div>
             </div>
 
-            <div class="section-title">II. Định lượng thực phẩm cho từng bữa ăn</div>
-            <table id="mealPortionTable">
+            <div class="section-title keep-together">Định lượng khẩu phần ăn tiêu chuẩn</div>
+            <table id="mealPortionTable" class="keep-together">
                 <thead>
                     <tr>
-                        <th width="33%">Bữa Sáng (25% Calo)</th>
-                        <th width="34%">Bữa Trưa (40% Calo)</th>
-                        <th width="33%">Bữa Chiều/Tối (35% Calo)</th>
+                        <th width="33%">Bữa Sáng (25% Kcal)</th>
+                        <th width="34%">Bữa Trưa (40% Kcal)</th>
+                        <th width="33%">Bữa Tối (35% Kcal)</th>
                     </tr>
                 </thead>
                 <tbody id="portionBody"></tbody>
             </table>
 
-            <div class="section-title">III. Kế hoạch chi tiết 28 ngày (Dinh dưỡng & Kỷ luật)</div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;"><i>Ghi chú: Lịch trình luân phiên để cơ thể không bị thích nghi quá nhanh, tối ưu hóa việc đốt mỡ và tăng cơ.</i></p>
-            
+            <div class="section-title keep-together" style="margin-top: 40px;">Kế hoạch chi tiết 28 ngày</div>
             <table id="full28DayTable">
                 <thead>
                     <tr>
-                        <th width="15%">Ngày</th>
-                        <th width="42.5%">Thực Đơn Gợi Ý</th>
-                        <th width="42.5%">Bài Tập Kỷ Luật</th>
+                        <th width="12%">Ngày</th>
+                        <th width="44%">Dinh Dưỡng Thực Hành</th>
+                        <th width="44%">Vận Động Kỷ Luật</th>
                     </tr>
                 </thead>
                 <tbody id="planBody"></tbody>
             </table>
 
-            <div class="golden-rules">
-                <h3>✦ QUY TẮC VÀNG TRONG 28 NGÀY</h3>
+            <div class="golden-rules keep-together">
+                <h3>✦ QUY TẮC VÀNG CHĂM SÓC SỨC KHỎE</h3>
                 <ul>
-                    <li>Dậy sớm uống 300ml nước ấm kèm <b>GreenBoost™</b> để thanh lọc cơ thể.</li>
-                    <li>Thay thế bữa sáng hoặc bữa phụ bằng <b>COLOS IgGOLD™</b> nạp đủ kháng thể và lợi khuẩn.</li>
-                    <li>Sau khi tập luyện 30 phút, bắt buộc dùng <b>FITBoost™</b> để phục hồi cơ bắp.</li>
-                    <li>Uống đủ 2.5 - 3 Lít nước mỗi ngày. Ngủ trước 23h00 để cơ thể tái tạo tế bào nội tạng.</li>
+                    <li>Dậy sớm uống 300ml nước ấm kèm <b>GreenBoost™</b> để thanh lọc hệ tiêu hóa.</li>
+                    <li>Có thể thay thế bữa sáng/phụ bằng <b>COLOS IgGOLD™</b> bổ sung kháng thể & canxi.</li>
+                    <li>Sau khi tập luyện 30-45 phút, cần nạp ngay đạm sạch để phục hồi vi mạch cơ bắp.</li>
+                    <li>Đảm bảo nạp đủ 2.5 - 3 Lít nước mỗi ngày. Nghỉ ngơi trước 23h00 để gan thải độc.</li>
                 </ul>
             </div>
         </div>
 
-        <button class="btn-pdf no-print" onclick="exportPDF()">⚡ TẢI XUỐNG BẢN PDF CHO KHÁCH HÀNG</button>
+        <button class="btn-pdf no-print" onclick="exportPDF()">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            TẢI XUỐNG BẢN PDF CHO KHÁCH HÀNG
+        </button>
     </div>
 </div>
 
 <script>
+    function formatDate(dateString) {
+        if(!dateString) return "Chưa cập nhật";
+        const parts = dateString.split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
     function calculate28DayPlan() {
+        // Lấy dữ liệu
         const nameInput = document.getElementById('custName').value;
-        const name = nameInput.trim() !== "" ? nameInput : "QUÝ KHÁCH MẾN THƯƠNG";
+        const dobInput = document.getElementById('dob').value;
+        const phoneInput = document.getElementById('phone').value;
+        const addressInput = document.getElementById('address').value;
+        
+        const name = nameInput.trim() !== "" ? nameInput : "KHÁCH HÀNG THÂN THIẾT";
         const h = parseFloat(document.getElementById('height').value);
         const w = parseFloat(document.getElementById('weight').value);
         const age = parseFloat(document.getElementById('age').value);
@@ -340,40 +436,46 @@
         const act = parseFloat(document.getElementById('activity').value);
         const goal = parseFloat(document.getElementById('goal').value);
 
-        if(!h || !w || !age) { alert("Vui lòng nhập đầy đủ chỉ số để hệ thống tính toán!"); return; }
+        if(!h || !w || !age) { alert("Vui lòng nhập đầy đủ chỉ số cơ thể để hệ thống tính toán!"); return; }
 
-        // Tính BMR & TDEE
+        // BMR & TDEE
         let bmr = (10 * w) + (6.25 * h) - (5 * age);
         bmr = (gender === 'male') ? bmr + 5 : bmr - 161;
         const tdee = bmr * act;
         const targetCal = tdee + goal;
 
-        // Tính Macros
+        // Macros
         const p_gram = (targetCal * 0.3) / 4;
         const c_gram = (targetCal * 0.45) / 4;
-        const f_gram = (targetCal * 0.25) / 9;
 
-        // Hiển thị kết quả tổng quan
+        // Hiển thị giao diện báo cáo
         document.getElementById('result-area').style.display = 'block';
+        
+        // Điền thông tin hành chính
         document.getElementById('outName').innerText = name.toUpperCase();
+        document.getElementById('outDob').innerText = formatDate(dobInput);
+        document.getElementById('outPhone').innerText = phoneInput || "Chưa cập nhật";
+        document.getElementById('outAddress').innerText = addressInput || "Chưa cập nhật";
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('vi-VN');
+
+        // Điền chỉ số
         document.getElementById('outCal').innerText = Math.round(targetCal);
         document.getElementById('outProt').innerText = Math.round(p_gram) + "g";
         document.getElementById('outCarb').innerText = Math.round(c_gram) + "g";
-        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('vi-VN');
 
         // BMI Status
         const bmi = w / ((h/100)**2);
         let bmiHtml = "";
-        if(bmi >= 25) bmiHtml = `<div class="status-badge alert">CHỈ SỐ BMI: ${bmi.toFixed(1)}<br><span style="font-size:13px;font-weight:500;">(Thừa cân - Cần tập trung cardio đốt mỡ và thải độc hệ tiêu hóa)</span></div>`;
-        else if(bmi < 18.5) bmiHtml = `<div class="status-badge warn">CHỈ SỐ BMI: ${bmi.toFixed(1)}<br><span style="font-size:13px;font-weight:500;">(Thiếu cân - Cần tập trung thặng dư dinh dưỡng và tập tạ tăng cơ)</span></div>`;
-        else bmiHtml = `<div class="status-badge healthy">CHỈ SỐ BMI: ${bmi.toFixed(1)}<br><span style="font-size:13px;font-weight:500;">(Cân đối - Tuyệt vời! Hãy tập trung làm săn chắc cơ thể và tăng sức bền)</span></div>`;
+        if(bmi >= 25) bmiHtml = `<div class="status-badge alert">CHỈ SỐ BMI: ${bmi.toFixed(1)} - THỪA CÂN<br><span style="font-size:13px;font-weight:500;">(Khuyến nghị: Tập trung bài tập Cardio Zone 2 đốt mỡ & làm sạch hệ tiêu hóa)</span></div>`;
+        else if(bmi < 18.5) bmiHtml = `<div class="status-badge warn">CHỈ SỐ BMI: ${bmi.toFixed(1)} - THIẾU CÂN<br><span style="font-size:13px;font-weight:500;">(Khuyến nghị: Thặng dư dinh dưỡng lành mạnh, tập trung tạ để tăng cơ)</span></div>`;
+        else bmiHtml = `<div class="status-badge healthy">CHỈ SỐ BMI: ${bmi.toFixed(1)} - CÂN ĐỐI<br><span style="font-size:13px;font-weight:500;">(Tuyệt vời! Hãy tập trung duy trì thói quen, làm săn chắc và tăng sức bền)</span></div>`;
         document.getElementById('bmiStatus').innerHTML = bmiHtml;
 
-        // Chiến lược
+        // Strategy
         let strategy = "";
-        if(goal < 0) strategy = "<b>Định hướng chiến lược:</b> Áp dụng thâm hụt calo thông minh. Ưu tiên các bài tập Cardio Zone 2 để đốt mỡ tối đa mà không gây mất cơ. Bắt buộc sử dụng thực phẩm bổ sung để giữ hệ miễn dịch khỏe mạnh khi cắt giảm khẩu phần ăn.";
-        else if(goal > 0) strategy = "<b>Định hướng chiến lược:</b> Áp dụng thặng dư calo có kiểm soát. Ưu tiên tập kháng lực (tập tạ) với mức tạ nặng dần. Đảm bảo nạp dư lượng đạm sạch sau mỗi buổi tập để sợi cơ phát triển tối đa.";
-        else strategy = "<b>Định hướng chiến lược:</b> Body Recomposition (Tái cấu trúc cơ thể). Giữ mức calo ổn định nhưng thay đổi chất lượng thực phẩm (ăn sạch hơn) kết hợp xen kẽ HIIT và tập kháng lực cường độ cao.";
+        if(goal < 0) strategy = "<b>Chiến lược cốt lõi:</b> Áp dụng thâm hụt calo thông minh (-). Ưu tiên vận động hiếu khí (Cardio) để tối ưu hóa việc đốt mỡ thừa mà không gây suy nhược cơ bắp. Khuyến khích dùng thực phẩm bổ sung tăng đề kháng trong giai đoạn cắt giảm calo.";
+        else if(goal > 0) strategy = "<b>Chiến lược cốt lõi:</b> Áp dụng thặng dư calo có kiểm soát (+). Tập trung hoàn toàn vào tập luyện kháng lực (tạ nặng dần). Phải đảm bảo lượng đạm sạch nạp vào cơ thể sau mỗi buổi tập để xây dựng sợi cơ mới.";
+        else strategy = "<b>Chiến lược cốt lõi:</b> Body Recomposition (Tái cấu trúc). Giữ mức năng lượng ổn định nhưng nâng cấp chất lượng thực phẩm. Phối hợp nhịp nhàng giữa các bài tập HIIT ép tim và tập kháng lực định hình vóc dáng.";
         document.getElementById('strategyDesc').innerHTML = strategy;
 
         // Bảng định lượng bữa ăn
@@ -381,31 +483,31 @@
         const carbS = Math.round(c_gram * 3.2 / 3); 
         document.getElementById('portionBody').innerHTML = `
             <tr>
-                <td>• 1 ly <b>COLOS IgGOLD™</b><br>• ${Math.round(carbS*0.8)}g Khoai lang/Yến mạch<br>• 1-2 quả Trứng luộc.</td>
-                <td>• ${meatS}g Ức gà/Cá/Bò nạc<br>• ${carbS}g Cơm lứt/Bún lứt<br>• 250g Rau xanh luộc/hấp.</td>
-                <td>• ${Math.round(meatS*0.8)}g Đạm sạch dễ tiêu<br>• ${Math.round(carbS*0.5)}g Tinh bột nhẹ<br>• Canh thảo mộc <b>GreenBoost™</b>.</td>
+                <td>• 1 ly dinh dưỡng <b>COLOS IgGOLD™</b><br>• ${Math.round(carbS*0.8)}g Khoai lang / Yến mạch<br>• 1-2 quả Trứng luộc (Protein).</td>
+                <td>• ${meatS}g Ức gà / Cá / Bò nạc<br>• ${carbS}g Cơm gạo lứt / Bún lứt<br>• 250g Rau xanh đa màu sắc.</td>
+                <td>• ${Math.round(meatS*0.8)}g Đạm trắng dễ tiêu (Cá/Gà)<br>• ${Math.round(carbS*0.5)}g Tinh bột chuyển hóa chậm<br>• Detox thanh lọc cơ thể.</td>
             </tr>
         `;
 
-        // Render 28 ngày
+        // Render lịch trình 28 ngày
         let planHtml = "";
-        const workoutA = "<b>Kháng lực (Upper Body):</b> Chống đẩy 3x12, Kéo xà/Tập tạ tay 3x15, Gập bụng.";
-        const workoutB = "<b>Cardio Đốt Mỡ:</b> Chạy bộ/Đạp xe/Đi bộ nhanh 40 phút (Duy trì Zone 2).";
-        const workoutC = "<b>Kháng lực (Lower Body):</b> Squat 4x15, Lunges mỗi chân 15 lần, Jump Squat.";
-        const workoutD = "<b>HIIT/Tabata:</b> 20 phút tập cường độ cao ngắt quãng (Leo cầu thang/Burpees).";
+        const workoutA = "<b>Kháng lực Thân trên:</b> Chống đẩy 3x12, Tập tạ tay 3x15, Core & Gập bụng.";
+        const workoutB = "<b>Cardio Đốt Mỡ:</b> Chạy bộ/Đạp xe/Bơi lội 40 phút (Duy trì nhịp tim Zone 2).";
+        const workoutC = "<b>Kháng lực Thân dưới:</b> Squat 4x15, Lunges 15 lần/chân, Bài tập mông đùi.";
+        const workoutD = "<b>HIIT Cường độ cao:</b> 20 phút vận động ngắt quãng liên tục (Burpees, Jumping Jack).";
 
-        const dietA = "Sáng: IgGOLD. Trưa: Cá hấp + Bông cải xanh. Tối: Salad ức gà áp chảo.";
-        const dietB = "Sáng: Bánh mì đen + Trứng. Trưa: Thịt bò xào hành tây + Cơm lứt. Tối: Súp rau củ.";
-        const dietC = "Sáng: IgGOLD + Trái cây ít ngọt. Trưa: Tôm rim + Đậu hũ trắng. Tối: Trứng hấp + Rau luộc.";
+        const dietA = "Sáng: IgGOLD. Trưa: Cá hấp + Bông cải. Tối: Salad ức gà áp chảo.";
+        const dietB = "Sáng: Bánh mì đen + Trứng. Trưa: Bò lúc lắc + Cơm lứt. Tối: Súp nấm củ quả.";
+        const dietC = "Sáng: IgGOLD + Trái cây. Trưa: Tôm rim + Đậu hũ. Tối: Trứng cuộn + Rau luộc.";
 
         for (let i = 1; i <= 28; i++) {
-            let dayClass = (i % 7 === 0) ? "day-row" : "";
+            let dayClass = (i % 7 === 0) ? "day-row keep-together" : "keep-together";
             let dayDiet = (i % 3 === 0) ? dietA : (i % 3 === 1 ? dietB : dietC);
             let dayWork = "";
             
             if (i % 7 === 0) {
-                dayWork = "<b>Phục hồi tích cực:</b> Tập Yoga giãn cơ nhẹ nhàng hoặc đi dạo thư giãn.";
-                dayDiet = "<b>Cheat Meal có kiểm soát:</b> Ăn 1 bữa ăn yêu thích nhưng dừng lại ở 80% sức chứa dạ dày.";
+                dayWork = "<b>Phục hồi (Active Recovery):</b> Yoga giãn cơ, đi bộ nhẹ nhàng.";
+                dayDiet = "<b>Cheat Meal:</b> Thưởng thức 1 bữa ăn tự do (Ăn no 80% dạ dày).";
             } else if (i % 2 === 0) {
                 dayWork = (i % 4 === 0) ? workoutB : workoutD;
             } else {
@@ -419,51 +521,52 @@
                     <td>${dayWork}</td>
                 </tr>
             `;
-            // Dòng ngăn cách giữa các tuần giúp PDF dễ nhìn hơn
             if (i % 7 === 0 && i < 28) {
-                planHtml += `<tr class="week-separator"><td colspan="3">KẾT THÚC TUẦN ${i/7} - BẮT ĐẦU TUẦN ${(i/7)+1}</td></tr>`;
+                planHtml += `<tr class="week-separator keep-together"><td colspan="3">KẾT THÚC TUẦN ${i/7} — CHUẨN BỊ TUẦN ${(i/7)+1}</td></tr>`;
             }
         }
         document.getElementById('planBody').innerHTML = planHtml;
-        window.scrollTo({ top: document.getElementById('result-area').offsetTop, behavior: 'smooth' });
+        window.scrollTo({ top: document.getElementById('result-area').offsetTop - 20, behavior: 'smooth' });
     }
 
     async function exportPDF() {
         const btn = document.querySelector('.btn-pdf');
         const element = document.getElementById('pdf-export-container');
-        const name = document.getElementById('custName').value || "KhachHang";
+        let nameRaw = document.getElementById('custName').value.trim();
+        const nameFile = nameRaw !== "" ? nameRaw.replace(/\s+/g, '-') : "KhachHang";
         
-        // BƯỚC QUAN TRỌNG FIX LỖI TRẮNG TRANG: Scroll màn hình về top trước khi render
+        // BƯỚC QUAN TRỌNG FIX LỖI PDF: 
+        // 1. Cuộn trang về góc trên cùng để html2canvas không bị lệch tọa độ
         const originalScroll = window.scrollY;
         window.scrollTo(0, 0);
         
-        btn.innerText = "⏳ HỆ THỐNG ĐANG KẾT XUẤT PDF...";
+        btn.innerHTML = "⏳ ĐANG XỬ LÝ DỮ LIỆU PDF...";
         btn.style.opacity = "0.7";
         btn.style.pointerEvents = "none";
 
+        // 2. Thiết lập cấu hình fix vỡ layout và trắng trang
         const opt = {
-            margin:       0.35,
-            filename:     `Chien-Luoc-Suc-Khoe-28-Ngay_${name.replace(/\s+/g, '-')}.pdf`,
+            margin:       [0.3, 0.3, 0.3, 0.3], // Top, Left, Bottom, Right
+            filename:     `LichTrinh-28Ngay-${nameFile}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
                 scale: 2, 
                 useCORS: true, 
-                scrollY: 0, // Fix lỗi cuộn trang
-                letterRendering: true
+                scrollY: 0,
+                windowWidth: document.documentElement.offsetWidth // Fix lỗi css width khi render canvas
             },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-            // Tránh cắt đứt nội dung dòng (tr) giữa 2 trang
-            pagebreak:    { mode: ['css', 'legacy'], avoid: ['tr', '.macro-card', '.status-badge', '.strategy-box'] }
+            pagebreak:    { mode: ['css', 'legacy'], avoid: ['.keep-together', 'tr'] }
         };
 
         try {
             await html2pdf().set(opt).from(element).save();
         } catch (e) {
-            alert("Lỗi xuất file! Vui lòng thử lại trên trình duyệt Chrome/Safari.");
+            alert("Có lỗi xảy ra khi xuất PDF. Vui lòng thử lại!");
             console.error(e);
         } finally {
-            window.scrollTo(0, originalScroll); // Trả lại vị trí cuộn cũ cho người dùng
-            btn.innerText = "⚡ TẢI XUỐNG BẢN PDF CHO KHÁCH HÀNG";
+            window.scrollTo(0, originalScroll); 
+            btn.innerHTML = `<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg> TẢI XUỐNG BẢN PDF CHO KHÁCH HÀNG`;
             btn.style.opacity = "1";
             btn.style.pointerEvents = "auto";
         }
