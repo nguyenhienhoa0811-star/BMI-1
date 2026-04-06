@@ -9,10 +9,10 @@
     <style>
         :root {
             /* Tông màu Y tế - Chuyên nghiệp, Tin cậy */
-            --primary: #0284c7;        /* Medical Greend */
-            --primary-dark: #0369a1;   /* Deep Medical Greend */
-            --primary-light: #e0f2fe;  /* Soft Greend Background */
-            --accent: #0ea5e9;         /* Highlight Greend */
+            --primary: #0284c7;        /* Medical Blue */
+            --primary-dark: #0369a1;   /* Deep Medical Blue */
+            --primary-light: #e0f2fe;  /* Soft Blue Background */
+            --accent: #0ea5e9;         /* Highlight Blue */
             
             --bg: #f8fafc;
             --card: #ffffff;
@@ -26,7 +26,7 @@
             --success: #10b981;
             --success-bg: #d1fae5;
             
-            --border: #e2e8f0;
+            --border: #cbd5e1; /* Làm đậm màu viền một chút để rõ ràng hơn */
         }
 
         * { box-sizing: border-box; }
@@ -151,7 +151,6 @@
         #result-area { display: none; margin-top: 10px; }
         #pdf-export-container { padding: 20px; background: white; }
         
-        /* Cấu trúc Header PDF chuyên nghiệp */
         .pdf-banner {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
@@ -220,13 +219,58 @@
         .macro-card span { display: block; font-size: 26px; font-weight: 800; color: var(--primary-dark); line-height: 1; }
         .macro-card small { font-size: 12px; color: var(--text-muted); margin-top: 8px; display: block; background: var(--bg); padding: 4px; border-radius: 4px;}
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; font-size: 14px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-        th { background: var(--primary-light); color: var(--primary-dark); padding: 14px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid var(--primary); }
-        td { padding: 14px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: top; line-height: 1.6; }
-        tr:last-child td { border-bottom: none; }
+        /* NÂNG CẤP BẢNG 28 NGÀY: ĐƯỜNG KẺ RÕ RÀNG */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; /* Chuyển sang collapse để đường kẻ sắc nét */
+            margin-top: 10px; 
+            font-size: 14px; 
+            border: 2px solid var(--primary-dark); /* Viền ngoài đậm */
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th { 
+            background: var(--primary-dark); 
+            color: white; 
+            padding: 14px; 
+            text-align: left; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            font-size: 13px; 
+            border: 1px solid white; /* Đường kẻ trắng giữa các tiêu đề */
+        }
+        td { 
+            padding: 14px; 
+            border: 1px solid var(--border); /* Đường kẻ phân biệt rõ ràng */
+            color: var(--text-main); 
+            vertical-align: top; 
+            line-height: 1.6; 
+        }
         
-        .day-row td { background: var(--bg); font-weight: 600; color: var(--primary-dark); text-align: center; border-right: 1px solid var(--border); }
-        .week-separator td { background: var(--primary-dark); color: white; text-align: center; font-size: 13px; font-weight: 700; padding: 10px; letter-spacing: 1px; text-transform: uppercase; }
+        /* Hiệu ứng dòng xen kẽ để dễ đọc */
+        tbody tr:nth-child(even) {
+            background-color: #f1f5f9;
+        }
+
+        .day-column { 
+            font-weight: 800; 
+            color: var(--primary-dark); 
+            text-align: center; 
+            background-color: var(--primary-light) !important;
+            border-right: 2px solid var(--primary-dark);
+        }
+        
+        .week-separator td { 
+            background: #1e293b !important; 
+            color: #fbbf24; /* Màu vàng Gold cho phân tách tuần */
+            text-align: center; 
+            font-size: 13px; 
+            font-weight: 800; 
+            padding: 12px; 
+            letter-spacing: 2px; 
+            text-transform: uppercase;
+            border: 1px solid #1e293b;
+        }
 
         .golden-rules {
             margin-top: 35px;
@@ -239,30 +283,23 @@
         .golden-rules ul { margin: 0; padding-left: 20px; font-size: 14px; color: var(--text-main); line-height: 1.8; }
         .golden-rules li::marker { color: var(--primary); font-weight: bold; }
 
-        /* TỐI ƯU CLASS ĐỂ TRÁNH CẮT TRANG PDF (CRITICAL FIX) */
         .keep-together {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
 
-        /* TỐI ƯU CHO XUẤT IN PDF */
         @media print {
             body, .container { background: white !important; padding: 0 !important; box-shadow: none !important; max-width: 100%; margin: 0; border: none; }
             .no-print { display: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             #pdf-export-container { padding: 0; width: 100%; }
-            
-            /* Ngăn chặn bị cắt ngang trang */
             tr, .macro-card, .strategy-box, .status-badge, .keep-together { 
                 page-break-inside: avoid !important; 
                 break-inside: avoid !important;
             }
             h1, h2, h3, .section-title { page-break-after: avoid !important; break-after: avoid !important; }
-            table { page-break-inside: auto !important; }
-            
-            .macro-container { gap: 10px; }
-            .macro-card { padding: 15px 10px; }
-            td, th { padding: 10px; font-size: 12px; }
+            table { page-break-inside: auto !important; border: 2px solid #000 !important; }
+            td, th { border: 1px solid #000 !important; }
         }
     </style>
 </head>
@@ -388,7 +425,7 @@
             <table id="full28DayTable">
                 <thead>
                     <tr>
-                        <th width="12%">Ngày</th>
+                        <th width="12%" style="text-align:center;">Ngày</th>
                         <th width="44%">Dinh Dưỡng Thực Hành</th>
                         <th width="44%">Vận Động Kỷ Luật</th>
                     </tr>
@@ -422,7 +459,6 @@
     }
 
     function calculate28DayPlan() {
-        // Lấy dữ liệu
         const nameInput = document.getElementById('custName').value;
         const dobInput = document.getElementById('dob').value;
         const phoneInput = document.getElementById('phone').value;
@@ -438,32 +474,26 @@
 
         if(!h || !w || !age) { alert("Vui lòng nhập đầy đủ chỉ số cơ thể để hệ thống tính toán!"); return; }
 
-        // BMR & TDEE
         let bmr = (10 * w) + (6.25 * h) - (5 * age);
         bmr = (gender === 'male') ? bmr + 5 : bmr - 161;
         const tdee = bmr * act;
         const targetCal = tdee + goal;
 
-        // Macros
         const p_gram = (targetCal * 0.3) / 4;
         const c_gram = (targetCal * 0.45) / 4;
 
-        // Hiển thị giao diện báo cáo
         document.getElementById('result-area').style.display = 'block';
         
-        // Điền thông tin hành chính
         document.getElementById('outName').innerText = name.toUpperCase();
         document.getElementById('outDob').innerText = formatDate(dobInput);
         document.getElementById('outPhone').innerText = phoneInput || "Chưa cập nhật";
         document.getElementById('outAddress').innerText = addressInput || "Chưa cập nhật";
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('vi-VN');
 
-        // Điền chỉ số
         document.getElementById('outCal').innerText = Math.round(targetCal);
         document.getElementById('outProt').innerText = Math.round(p_gram) + "g";
         document.getElementById('outCarb').innerText = Math.round(c_gram) + "g";
 
-        // BMI Status
         const bmi = w / ((h/100)**2);
         let bmiHtml = "";
         if(bmi >= 25) bmiHtml = `<div class="status-badge alert">CHỈ SỐ BMI: ${bmi.toFixed(1)} - THỪA CÂN<br><span style="font-size:13px;font-weight:500;">(Khuyến nghị: Tập trung bài tập Cardio Zone 2 đốt mỡ & làm sạch hệ tiêu hóa)</span></div>`;
@@ -471,14 +501,12 @@
         else bmiHtml = `<div class="status-badge healthy">CHỈ SỐ BMI: ${bmi.toFixed(1)} - CÂN ĐỐI<br><span style="font-size:13px;font-weight:500;">(Tuyệt vời! Hãy tập trung duy trì thói quen, làm săn chắc và tăng sức bền)</span></div>`;
         document.getElementById('bmiStatus').innerHTML = bmiHtml;
 
-        // Strategy
         let strategy = "";
         if(goal < 0) strategy = "<b>Chiến lược cốt lõi:</b> Áp dụng thâm hụt calo thông minh (-). Ưu tiên vận động hiếu khí (Cardio) để tối ưu hóa việc đốt mỡ thừa mà không gây suy nhược cơ bắp. Khuyến khích dùng thực phẩm bổ sung tăng đề kháng trong giai đoạn cắt giảm calo.";
         else if(goal > 0) strategy = "<b>Chiến lược cốt lõi:</b> Áp dụng thặng dư calo có kiểm soát (+). Tập trung hoàn toàn vào tập luyện kháng lực (tạ nặng dần). Phải đảm bảo lượng đạm sạch nạp vào cơ thể sau mỗi buổi tập để xây dựng sợi cơ mới.";
         else strategy = "<b>Chiến lược cốt lõi:</b> Body Recomposition (Tái cấu trúc). Giữ mức năng lượng ổn định nhưng nâng cấp chất lượng thực phẩm. Phối hợp nhịp nhàng giữa các bài tập HIIT ép tim và tập kháng lực định hình vóc dáng.";
         document.getElementById('strategyDesc').innerHTML = strategy;
 
-        // Bảng định lượng bữa ăn
         const meatS = Math.round(p_gram * 4.2 / 3); 
         const carbS = Math.round(c_gram * 3.2 / 3); 
         document.getElementById('portionBody').innerHTML = `
@@ -489,7 +517,6 @@
             </tr>
         `;
 
-        // Render lịch trình 28 ngày
         let planHtml = "";
         const workoutA = "<b>Kháng lực Thân trên:</b> Chống đẩy 3x12, Tập tạ tay 3x15, Core & Gập bụng.";
         const workoutB = "<b>Cardio Đốt Mỡ:</b> Chạy bộ/Đạp xe/Bơi lội 40 phút (Duy trì nhịp tim Zone 2).";
@@ -501,7 +528,6 @@
         const dietC = "Sáng: IgGOLD + Trái cây. Trưa: Tôm rim + Đậu hũ. Tối: Trứng cuộn + Rau luộc.";
 
         for (let i = 1; i <= 28; i++) {
-            let dayClass = (i % 7 === 0) ? "day-row keep-together" : "keep-together";
             let dayDiet = (i % 3 === 0) ? dietA : (i % 3 === 1 ? dietB : dietC);
             let dayWork = "";
             
@@ -515,8 +541,8 @@
             }
 
             planHtml += `
-                <tr class="${dayClass}">
-                    <td><strong>Ngày ${i}</strong></td>
+                <tr class="keep-together">
+                    <td class="day-column">Ngày ${i}</td>
                     <td>${dayDiet}</td>
                     <td>${dayWork}</td>
                 </tr>
@@ -535,8 +561,6 @@
         let nameRaw = document.getElementById('custName').value.trim();
         const nameFile = nameRaw !== "" ? nameRaw.replace(/\s+/g, '-') : "KhachHang";
         
-        // BƯỚC QUAN TRỌNG FIX LỖI PDF: 
-        // 1. Cuộn trang về góc trên cùng để html2canvas không bị lệch tọa độ
         const originalScroll = window.scrollY;
         window.scrollTo(0, 0);
         
@@ -544,16 +568,15 @@
         btn.style.opacity = "0.7";
         btn.style.pointerEvents = "none";
 
-        // 2. Thiết lập cấu hình fix vỡ layout và trắng trang
         const opt = {
-            margin:       [0.3, 0.3, 0.3, 0.3], // Top, Left, Bottom, Right
+            margin:       [0.3, 0.3, 0.3, 0.3],
             filename:     `LichTrinh-28Ngay-${nameFile}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { 
                 scale: 2, 
                 useCORS: true, 
                 scrollY: 0,
-                windowWidth: document.documentElement.offsetWidth // Fix lỗi css width khi render canvas
+                windowWidth: document.documentElement.offsetWidth 
             },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
             pagebreak:    { mode: ['css', 'legacy'], avoid: ['.keep-together', 'tr'] }
