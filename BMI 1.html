@@ -8,24 +8,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
-            /* Tông màu Blue & Green */
+            /* Tông màu Y tế - Chuyên nghiệp, Tin cậy */
             --primary: #0284c7;        /* Medical Blue */
-            --primary-dark: #0369a1;   /* Deep Blue */
-            --primary-light: #f0f9ff;  /* Sky Blue Tint */
-            
-            --secondary: #16a34a;      /* Health Green */
-            --secondary-dark: #15803d; /* Deep Green */
-            --secondary-light: #f0fdf4;/* Mint Tint */
+            --primary-dark: #0369a1;   /* Deep Medical Blue */
+            --primary-light: #e0f2fe;  /* Soft Blue Background */
+            --accent: #0ea5e9;         /* Highlight Blue */
             
             --bg: #f8fafc;
             --card: #ffffff;
             --text-main: #0f172a;
             --text-muted: #475569;
-            --border: #cbd5e1;
             
-            --success-bg: #d1fae5;
+            --danger: #ef4444;
             --danger-bg: #fef2f2;
+            --warning: #f59e0b;
             --warning-bg: #fffbeb;
+            --success: #10b981;
+            --success-bg: #d1fae5;
+            
+            --border: #e2e8f0;
         }
 
         * { box-sizing: border-box; }
@@ -48,188 +49,522 @@
             border-top: 8px solid var(--primary);
         }
 
-        .header { text-align: center; margin-bottom: 35px; padding-bottom: 20px; border-bottom: 2px dashed var(--border); }
-        .header h1 { color: var(--primary-dark); font-size: 28px; font-weight: 800; margin: 0 0 8px 0; text-transform: uppercase; }
-        .header p { color: var(--secondary-dark); font-size: 16px; font-weight: 600; margin: 0; }
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed var(--border);
+        }
+        .header h1 {
+            color: var(--primary-dark);
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0;
+        }
 
         .section-title {
-            font-size: 16px; font-weight: 800; color: var(--primary-dark); text-transform: uppercase;
-            margin: 30px 0 20px 0; display: flex; align-items: center; padding-bottom: 10px; border-bottom: 2px solid var(--secondary-light);
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            margin: 30px 0 20px 0;
+            display: flex;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
         }
         .section-title::before {
-            content: '+'; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px;
-            background: var(--secondary); color: white; margin-right: 12px; border-radius: 4px; font-size: 18px;
+            content: '+';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            margin-right: 12px;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
         }
 
-        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .grid-inputs-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .grid-inputs-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
         .input-box { display: flex; flex-direction: column; }
         .input-box.full-width { grid-column: 1 / -1; }
+        
         label { font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
-        input, select { padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 14px; background: #f8fafc; }
+        input, select {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
 
-        .btn-calc, .btn-pdf { color: white; border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 20px; }
-        .btn-calc { background: var(--primary); }
-        .btn-pdf { background: #0f172a; display: flex; justify-content: center; align-items: center; gap: 10px; }
-
-        #result-area { display: none; }
-        .pdf-banner { background: linear-gradient(135deg, var(--primary-dark), var(--secondary)); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; }
-        .client-info-grid { background: var(--primary-light); padding: 20px; border-radius: 0 0 12px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; font-size: 14px; }
+        .btn-calc, .btn-pdf {
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s ease;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-calc { background: var(--primary); margin-top: 20px; box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2); }
+        .btn-calc:hover { background: var(--primary-dark); transform: translateY(-2px); }
         
-        .status-badge { padding: 15px; border-radius: 12px; text-align: center; font-weight: 700; margin-bottom: 20px; }
-        .healthy { background: var(--success-bg); color: #065f46; }
-        .alert { background: var(--danger-bg); color: #b91c1c; }
+        .btn-pdf { background: #0f172a; margin-top: 30px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-pdf:hover { background: #1e293b; }
 
-        .macro-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
-        .macro-card { background: #fff; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid var(--border); border-top: 4px solid var(--primary); }
-        .macro-card label { display: block; font-size: 11px; color: var(--text-muted); }
-        .macro-card span { font-size: 22px; font-weight: 800; color: var(--text-main); }
-
-        /* BẢNG ĐỊNH LƯỢNG GIỐNG HÌNH CỦA BẠN */
-        .food-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid var(--border); }
-        .food-table th { background: #f1f5f9; color: var(--primary-dark); padding: 12px; text-align: left; border: 1px solid var(--border); font-size: 13px; }
-        .food-table td { padding: 12px; border: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
-        .food-table .category-name { font-weight: 800; color: var(--text-main); background: #f8fafc; }
-
-        /* BẢNG 28 NGÀY */
-        .plan-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .plan-table th { background: var(--primary-dark); color: white; padding: 12px; border: 1px solid var(--border); }
-        .plan-table td { padding: 12px; border: 1px solid var(--border); }
-        .day-col { font-weight: 800; color: var(--primary-dark); text-align: center; background: var(--primary-light); }
+        /* Report Styles */
+        #result-area { display: none; margin-top: 10px; }
+        #pdf-export-container { padding: 20px; background: white; }
         
-        /* TIÊU ĐỀ KẾT THÚC TUẦN - NỀN XANH LÁ */
-        .week-sep td { background: var(--secondary) !important; color: white !important; text-align: center; font-weight: 800; padding: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .pdf-banner {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 25px 20px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+        }
+        .pdf-banner h2 { margin: 0 0 5px 0; font-size: 24px; letter-spacing: 1px; }
+        .pdf-banner p { margin: 0; opacity: 0.9; font-size: 14px; }
 
-        .keep-together { page-break-inside: avoid; break-inside: avoid; }
+        .client-info-grid {
+            background: var(--primary-light);
+            padding: 20px;
+            border-radius: 0 0 12px 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .client-info-item { display: flex; gap: 8px; }
+        .client-info-item strong { color: var(--primary-dark); min-width: 100px; }
+
+        .status-badge {
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+        .healthy { background: var(--success-bg); color: #065f46; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert { background: var(--danger-bg); color: #b91c1c; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .warn { background: var(--warning-bg); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        .strategy-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 6px solid var(--accent);
+            margin-bottom: 25px;
+            font-size: 14.5px;
+            line-height: 1.7;
+        }
+
+        .macro-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .macro-card {
+            background: #fff;
+            padding: 20px 15px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .macro-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--primary);
+        }
+        .macro-card label { display: block; font-size: 12px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+        .macro-card span { display: block; font-size: 26px; font-weight: 800; color: var(--primary-dark); line-height: 1; }
+        .macro-card small { font-size: 12px; color: var(--text-muted); margin-top: 8px; display: block; background: var(--bg); padding: 4px; border-radius: 4px;}
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; font-size: 14px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        th { background: var(--primary-light); color: var(--primary-dark); padding: 14px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid var(--primary); }
+        td { padding: 14px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: top; line-height: 1.6; }
+        tr:last-child td { border-bottom: none; }
+        
+        .day-row td { background: var(--bg); font-weight: 600; color: var(--primary-dark); text-align: center; border-right: 1px solid var(--border); }
+        .week-separator td { background: var(--primary-dark); color: white; text-align: center; font-size: 13px; font-weight: 700; padding: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+        .golden-rules {
+            margin-top: 35px;
+            background: #fff;
+            border: 2px solid var(--primary-light);
+            border-radius: 16px;
+            padding: 25px;
+        }
+        .golden-rules h3 { margin: 0 0 15px 0; color: var(--primary-dark); font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        .golden-rules ul { margin: 0; padding-left: 20px; font-size: 14px; color: var(--text-main); line-height: 1.8; }
+        .golden-rules li::marker { color: var(--primary); font-weight: bold; }
+
+        /* Nguyên liệu khuyên dùng - Highlight from image */
+        .ingredient-table td:first-child {
+            font-weight: 800;
+            color: var(--primary-dark);
+            background: var(--primary-light);
+            width: 30%;
+        }
+
+        .keep-together {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        @media print {
+            body, .container { background: white !important; padding: 0 !important; box-shadow: none !important; max-width: 100%; margin: 0; border: none; }
+            .no-print { display: none !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            #pdf-export-container { padding: 0; width: 100%; }
+            tr, .macro-card, .strategy-box, .status-badge, .keep-together { 
+                page-break-inside: avoid !important; 
+                break-inside: avoid !important;
+            }
+            h1, h2, h3, .section-title { page-break-after: avoid !important; break-after: avoid !important; }
+            table { page-break-inside: auto !important; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header no-print">
-        <h1>HỆ THỐNG SỨC KHỎE THỊNH VƯỢNG</h1>
-        <p>Kiến Tạo Vóc Dáng - Nâng Tầm Sức Sống</p>
+        <h1>TĂNG CƯỜNG SỨC KHỎE - KIẾN TẠO CUỘC ĐỜI</h1>
+        <p>Phân Tích Chỉ Số & Thiết Lập Chế Độ</p>
     </div>
 
     <div class="no-print">
-        <div class="section-title">Thông tin khách hàng</div>
-        <div class="grid-inputs"><div class="input-box full-width"><label>Họ và Tên</label><input type="text" id="custName" placeholder="Tên khách hàng..."></div></div>
+        <div class="section-title">I. Thông tin khách hàng & Chỉ số cá nhân</div>
+        
+        <div class="grid-inputs">
+            <div class="input-box full-width">
+                <label>Họ và Tên khách hàng</label>
+                <input type="text" id="custName" placeholder="Ví dụ: Nguyễn Văn A...">
+            </div>
+        </div>
+
+        <div class="grid-inputs grid-inputs-3">
+            <div class="input-box">
+                <label>Sinh ngày</label>
+                <input type="date" id="dob">
+            </div>
+            <div class="input-box">
+                <label>Số điện thoại</label>
+                <input type="tel" id="phone" placeholder="Ví dụ: 0901234567">
+            </div>
+            <div class="input-box">
+                <label>Giới tính</label>
+                <select id="gender"><option value="male">Nam</option><option value="female">Nữ</option></select>
+            </div>
+        </div>
+        
+        <div class="grid-inputs">
+            <div class="input-box full-width">
+                <label>Địa chỉ liên hệ</label>
+                <input type="text" id="address" placeholder="Ví dụ: Quận 1, TP. Hồ Chí Minh...">
+            </div>
+        </div>
+
         <div class="grid-inputs grid-inputs-3">
             <div class="input-box"><label>Chiều cao (cm)</label><input type="number" id="height" value="165"></div>
-            <div class="input-box"><label>Cân nặng (kg)</label><input type="number" id="weight" value="65"></div>
-            <div class="input-box"><label>Tuổi</label><input type="number" id="age" value="30"></div>
+            <div class="input-box"><label>Cân nặng (kg)</label><input type="number" id="weight" value="80"></div>
+            <div class="input-box"><label>Tuổi</label><input type="number" id="age" value="42"></div>
         </div>
+
         <div class="grid-inputs">
-            <div class="input-box"><label>Vận động</label><select id="activity"><option value="1.2">Ít vận động</option><option value="1.55" selected>Vừa phải</option><option value="1.725">Cường độ cao</option></select></div>
-            <div class="input-box"><label>Mục tiêu</label><select id="goal"><option value="-500">Giảm mỡ</option><option value="0" selected>Duy trì</option><option value="500">Tăng cơ</option></select></div>
+            <div class="input-box">
+                <label>Mức độ vận động hiện tại</label>
+                <select id="activity">
+                    <option value="1.2">Ít vận động (Văn phòng, không tập)</option>
+                    <option value="1.375">Vận động nhẹ (Tập 1-2 buổi/tuần)</option>
+                    <option value="1.55" selected>Vận động vừa (Tập 3-5 buổi/tuần)</option>
+                    <option value="1.725">Vận động nặng (Tập 6-7 buổi/tuần)</option>
+                </select>
+            </div>
+            <div class="input-box">
+                <label>Mục tiêu mong muốn (28 Ngày)</label>
+                <select id="goal">
+                    <option value="-500" selected>Giảm mỡ thần tốc (-500 kcal)</option>
+                    <option value="-300">Giảm cân bền vững (-300 kcal)</option>
+                    <option value="0">Tái cấu trúc cơ thể (Duy trì, siết cơ)</option>
+                    <option value="500">Tăng cơ khỏe mạnh (+500 kcal)</option>
+                </select>
+            </div>
         </div>
-        <button class="btn-calc" onclick="calculate()">KHỞI TẠO LỘ TRÌNH</button>
+
+        <button class="btn-calc" onclick="calculate28DayPlan()">KHỞI TẠO CHIẾN LƯỢC 28 NGÀY</button>
     </div>
 
     <div id="result-area">
         <div id="pdf-export-container">
             <div class="pdf-banner keep-together">
-                <h2>CHIẾN LƯỢC CHUYỂN HÓA 28 NGÀY</h2>
-                <p>Personalized Health Strategy</p>
+                <h2>LỘ TRÌNH 28 NGÀY CHUYỂN HÓA VÓC DÁNG</h2>
+                <p>Prosperity Health & Wellness System</p>
             </div>
+            
             <div class="client-info-grid keep-together">
-                <div><strong>Khách hàng:</strong> <span id="outName"></span></div>
-                <div><strong>Ngày lập:</strong> <span id="currentDate"></span></div>
+                <div class="client-info-item"><strong>Khách hàng:</strong> <span id="outName"></span></div>
+                <div class="client-info-item"><strong>Ngày lập:</strong> <span id="currentDate"></span></div>
+                <div class="client-info-item"><strong>Sinh ngày:</strong> <span id="outDob"></span></div>
+                <div class="client-info-item"><strong>Điện thoại:</strong> <span id="outPhone"></span></div>
+                <div class="client-info-item" style="grid-column: 1 / -1;"><strong>Địa chỉ:</strong> <span id="outAddress"></span></div>
             </div>
 
             <div id="bmiStatus" class="keep-together"></div>
+            <div class="strategy-box keep-together" id="strategyDesc"></div>
 
             <div class="macro-container keep-together">
-                <div class="macro-card"><label>Năng lượng</label><span id="outCal">0</span><br><small>kcal/ngày</small></div>
-                <div class="macro-card"><label>Đạm (Protein)</label><span id="outProt">0g</span><br><small>Xây dựng cơ</small></div>
-                <div class="macro-card"><label>Tinh bột (Carb)</label><span id="outCarb">0g</span><br><small>Năng lượng</small></div>
+                <div class="macro-card">
+                    <label>Ngân sách Năng lượng</label>
+                    <span id="outCal">0</span>
+                    <small>Kcal/ngày</small>
+                </div>
+                <div class="macro-card">
+                    <label>Đạm (Protein)</label>
+                    <span id="outProt">0g</span>
+                    <small>Duy trì & Phát triển cơ</small>
+                </div>
+                <div class="macro-card">
+                    <label>Tinh bột (Carb)</label>
+                    <span id="outCarb">0g</span>
+                    <small>Cung cấp năng lượng</small>
+                </div>
             </div>
 
-            <div class="section-title keep-together">Định lượng khẩu phần ăn tiêu chuẩn</div>
-            <table class="food-table keep-together">
-                <thead>
-                    <tr><th width="25%">NHÓM</th><th>NGUYÊN LIỆU KHUYÊN DÙNG</th></tr>
-                </thead>
-                <tbody id="foodBody">
-                    </tbody>
+            <div class="section-title keep-together">II. Danh mục nguyên liệu khuyên dùng</div>
+            <table class="ingredient-table keep-together">
+                <tr>
+                    <td>Đạm (Protein)</td>
+                    <td>Ức gà, Cá hồi/thu, Trứng, Thịt bò nạc, Tôm, <b>TPBS Protein FITBoost™</b>.</td>
+                </tr>
+                <tr>
+                    <td>Tinh Bột</td>
+                    <td>Khoai lang, Gạo lứt, Yến mạch, Bún gạo lứt, <b>Sữa non COLOS IgGOLD™</b>.</td>
+                </tr>
+                <tr>
+                    <td>Chất Béo</td>
+                    <td>Dầu Olive, <b>TPBS CardioBoost™</b>, Hạt hạnh nhân/walnut, Quả bơ.</td>
+                </tr>
+                <tr>
+                    <td>Chất Xơ</td>
+                    <td>Súp lơ, Rau cải, Xà lách, Dưa chuột, <b>Trà thảo mộc GreenBoost™</b>.</td>
+                </tr>
             </table>
 
-            <div class="section-title keep-together">Kế hoạch chi tiết 28 ngày</div>
-            <table class="plan-table">
+            <div class="section-title keep-together" style="margin-top: 30px;">III. Định lượng khẩu phần ăn tiêu chuẩn</div>
+            <table id="mealPortionTable" class="keep-together">
                 <thead>
-                    <tr><th width="15%">Ngày</th><th width="40%">Thực đơn</th><th width="45%">Luyện tập</th></tr>
+                    <tr>
+                        <th width="33%">Bữa Sáng (25% Kcal)</th>
+                        <th width="34%">Bữa Trưa (40% Kcal)</th>
+                        <th width="33%">Bữa Tối (35% Kcal)</th>
+                    </tr>
+                </thead>
+                <tbody id="portionBody"></tbody>
+            </table>
+
+            <div class="section-title keep-together" style="margin-top: 40px;">IV. Kế hoạch chi tiết 28 ngày</div>
+            <table id="full28DayTable">
+                <thead>
+                    <tr>
+                        <th width="12%">Ngày</th>
+                        <th width="44%">Dinh Dưỡng Thực Hành</th>
+                        <th width="44%">Vận Động Kỷ Luật</th>
+                    </tr>
                 </thead>
                 <tbody id="planBody"></tbody>
             </table>
+
+            <div class="golden-rules keep-together">
+                <h3>✦ QUY TẮC VÀNG CHĂM SÓC SỨC KHỎE</h3>
+                <ul>
+                    <li>Dậy sớm uống 300ml nước ấm kèm <b>GreenBoost™</b> để thanh lọc hệ tiêu hóa và tăng cường chất xơ.</li>
+                    <li>Có thể thay thế bữa sáng/phụ bằng <b>COLOS IgGOLD™</b> để bổ sung kháng thể, canxi và lợi khuẩn.</li>
+                    <li>Sử dụng <b>Protein FITBoost™</b> sau khi tập luyện 30-45 phút để phục hồi và xây dựng cơ bắp.</li>
+                    <li>Bổ sung chất béo tốt từ <b>CardioBoost™</b> hoặc Hạt hạnh nhân/walnut để bảo vệ tim mạch.</li>
+                    <li>Đảm bảo nạp đủ 2.5 - 3 Lít nước mỗi ngày. Nghỉ ngơi trước 23h00 để gan thải độc.</li>
+                </ul>
+            </div>
         </div>
-        <button class="btn-pdf no-print" onclick="exportPDF()">TẢI BẢN PDF</button>
+
+        <button class="btn-pdf no-print" onclick="exportPDF()">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            TẢI XUỐNG BẢN PDF CHO KHÁCH HÀNG
+        </button>
     </div>
 </div>
 
 <script>
-    function calculate() {
-        const name = document.getElementById('custName').value || "KHÁCH HÀNG";
+    function formatDate(dateString) {
+        if(!dateString) return "Chưa cập nhật";
+        const parts = dateString.split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function calculate28DayPlan() {
+        const nameInput = document.getElementById('custName').value;
+        const dobInput = document.getElementById('dob').value;
+        const phoneInput = document.getElementById('phone').value;
+        const addressInput = document.getElementById('address').value;
+        
+        const name = nameInput.trim() !== "" ? nameInput : "KHÁCH HÀNG THÂN THIẾT";
         const h = parseFloat(document.getElementById('height').value);
         const w = parseFloat(document.getElementById('weight').value);
         const age = parseFloat(document.getElementById('age').value);
+        const gender = document.getElementById('gender').value;
         const act = parseFloat(document.getElementById('activity').value);
         const goal = parseFloat(document.getElementById('goal').value);
 
-        const bmr = (10 * w) + (6.25 * h) - (5 * age) + 5;
-        const targetCal = (bmr * act) + goal;
+        if(!h || !w || !age) { alert("Vui lòng nhập đầy đủ chỉ số cơ thể!"); return; }
+
+        let bmr = (10 * w) + (6.25 * h) - (5 * age);
+        bmr = (gender === 'male') ? bmr + 5 : bmr - 161;
+        const tdee = bmr * act;
+        const targetCal = tdee + goal;
+
         const p_gram = (targetCal * 0.3) / 4;
         const c_gram = (targetCal * 0.45) / 4;
-        const f_gram = (targetCal * 0.25) / 9;
 
         document.getElementById('result-area').style.display = 'block';
+        
         document.getElementById('outName').innerText = name.toUpperCase();
+        document.getElementById('outDob').innerText = formatDate(dobInput);
+        document.getElementById('outPhone').innerText = phoneInput || "Chưa cập nhật";
+        document.getElementById('outAddress').innerText = addressInput || "Chưa cập nhật";
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('vi-VN');
+
         document.getElementById('outCal').innerText = Math.round(targetCal);
         document.getElementById('outProt').innerText = Math.round(p_gram) + "g";
         document.getElementById('outCarb').innerText = Math.round(c_gram) + "g";
 
         const bmi = w / ((h/100)**2);
-        document.getElementById('bmiStatus').innerHTML = bmi >= 25 ? `<div class="status-badge alert">BMI: ${bmi.toFixed(1)} - CẦN GIẢM MỠ</div>` : `<div class="status-badge healthy">BMI: ${bmi.toFixed(1)} - CÂN ĐỐI</div>`;
+        let bmiHtml = "";
+        if(bmi >= 25) bmiHtml = `<div class="status-badge alert">CHỈ SỐ BMI: ${bmi.toFixed(1)} - THỪA CÂN<br><span style="font-size:13px;font-weight:500;">(Khuyến nghị: Thâm hụt calo, ưu tiên đạm sạch và GreenBoost™ để hỗ trợ chuyển hóa mỡ)</span></div>`;
+        else if(bmi < 18.5) bmiHtml = `<div class="status-badge warn">CHỈ SỐ BMI: ${bmi.toFixed(1)} - THIẾU CÂN<br><span style="font-size:13px;font-weight:500;">(Khuyến nghị: Thặng dư calo lành mạnh, bổ sung COLOS IgGOLD™ mỗi ngày)</span></div>`;
+        else bmiHtml = `<div class="status-badge healthy">CHỈ SỐ BMI: ${bmi.toFixed(1)} - CÂN ĐỐI<br><span style="font-size:13px;font-weight:500;">(Tuyệt vời! Duy trì thói quen vận động kết hợp CardioBoost™ bảo vệ tim mạch)</span></div>`;
+        document.getElementById('bmiStatus').innerHTML = bmiHtml;
 
-        // ĐIỀN DỮ LIỆU GIỐNG HÌNH ẢNH CỦA BẠN
-        document.getElementById('foodBody').innerHTML = `
+        let strategy = "";
+        if(goal < 0) strategy = "<b>Chiến lược:</b> Giảm mỡ thông minh. Kết hợp GreenBoost™ thải độc và Protein FITBoost™ để giữ cơ. Ưu tiên thực phẩm nhóm tinh bột chậm (Gạo lứt, Yến mạch).";
+        else if(goal > 0) strategy = "<b>Chiến lược:</b> Tăng cơ khỏe mạnh. Tăng cường Protein từ thịt bò nạc, cá hồi và FITBoost™. Bổ sung CardioBoost™ để tăng sức bền khi tập nặng.";
+        else strategy = "<b>Chiến lược:</b> Tái cấu trúc (Recomp). Thay đổi chất lượng nguồn đạm và béo. Ưu tiên dầu Olive và hạt hạnh nhân.";
+        document.getElementById('strategyDesc').innerHTML = strategy;
+
+        const meatS = Math.round(p_gram * 4.2 / 3); 
+        const carbS = Math.round(c_gram * 3.2 / 3); 
+        document.getElementById('portionBody').innerHTML = `
             <tr>
-                <td class="category-name">Đạm (Protein)</td>
-                <td>Ức gà, Cá hồi/thu, Trứng, Thịt bò nạc, Tôm, TPBS <b>Protein FITBoost™</b>.<br><i>(Định lượng: ~${Math.round(p_gram)}g/ngày)</i></td>
-            </tr>
-            <tr>
-                <td class="category-name">Tinh Bột</td>
-                <td>Khoai lang, Gạo lứt, Yến mạch, Bún gạo lứt, Sữa non <b>COLOS IgGOLD™</b>.<br><i>(Định lượng: ~${Math.round(c_gram)}g/ngày)</i></td>
-            </tr>
-            <tr>
-                <td class="category-name">Chất Béo</td>
-                <td>Dầu Olive, TPBS <b>CardioBoost™</b>, Hạnh nhân/walnut, Quả bơ.<br><i>(Định lượng: ~${Math.round(f_gram)}g/ngày)</i></td>
-            </tr>
-            <tr>
-                <td class="category-name">Chất Xơ</td>
-                <td>Súp lơ, Rau cải, Xà lách, Dưa chuột, Trà thảo mộc <b>GreenBoost™</b>.</td>
+                <td>• 1 ly <b>COLOS IgGOLD™</b><br>• ${Math.round(carbS*0.7)}g Yến mạch/Khoai lang<br>• 2 quả Trứng luộc.</td>
+                <td>• ${meatS}g Ức gà/Thịt bò nạc<br>• ${carbS}g Cơm gạo lứt/Bún lứt<br>• 250g Súp lơ & Rau cải.</td>
+                <td>• ${Math.round(meatS*0.8)}g Cá hồi/Tôm áp chảo<br>• 1/2 Quả bơ (Chất béo tốt)<br>• 1 ly <b>GreenBoost™</b>.</td>
             </tr>
         `;
 
         let planHtml = "";
+        const workoutA = "<b>Kháng lực:</b> Chống đẩy, Squat, Tập tạ tay (3 hiệp x 15 lần).";
+        const workoutB = "<b>Cardio:</b> Chạy bộ hoặc đi bộ nhanh 40 phút (Zone 2).";
+        const workoutC = "<b>Phục hồi:</b> Yoga, giãn cơ toàn thân, đi bộ nhẹ.";
+
+        const dietA = "Sáng: IgGOLD. Trưa: Thịt bò nạc + Cơm lứt. Tối: Salad Cá hồi + Bơ.";
+        const dietB = "Sáng: Yến mạch + Trứng. Trưa: Ức gà + Gạo lứt. Tối: Tôm rim + Súp lơ.";
+        const dietC = "Sáng: IgGOLD + Hạt hạnh nhân. Trưa: Cá thu + Bún lứt. Tối: Salad ức gà.";
+
         for (let i = 1; i <= 28; i++) {
+            let dayClass = (i % 7 === 0) ? "day-row keep-together" : "keep-together";
+            let dayDiet = (i % 3 === 0) ? dietA : (i % 3 === 1 ? dietB : dietC);
+            let dayWork = (i % 7 === 0) ? workoutC : (i % 2 === 0 ? workoutB : workoutA);
+
+            if (i % 7 === 0) {
+                dayDiet = "<b>Cheat Meal:</b> Thưởng thức 1 bữa tự do (Ưu tiên đủ đạm & xơ).";
+            }
+
             planHtml += `
-                <tr class="keep-together">
-                    <td class="day-col">Ngày ${i}</td>
-                    <td>${i % 7 === 0 ? "<b>Cheat Meal</b>" : "Ăn theo định lượng bảng trên"}</td>
-                    <td>${i % 2 === 0 ? "Cardio đốt mỡ" : "Tập kháng lực/Gym"}</td>
-                </tr>`;
+                <tr class="${dayClass}">
+                    <td><strong>Ngày ${i}</strong></td>
+                    <td>${dayDiet}</td>
+                    <td>${dayWork}</td>
+                </tr>
+            `;
             if (i % 7 === 0 && i < 28) {
-                planHtml += `<tr class="week-sep"><td colspan="3">KẾT THÚC TUẦN ${i/7} — CHUẨN BỊ TUẦN ${(i/7)+1}</td></tr>`;
+                planHtml += `<tr class="week-separator keep-together"><td colspan="3">KẾT THÚC TUẦN ${i/7} — CHUẨN BỊ TUẦN ${(i/7)+1}</td></tr>`;
             }
         }
         document.getElementById('planBody').innerHTML = planHtml;
+        window.scrollTo({ top: document.getElementById('result-area').offsetTop - 20, behavior: 'smooth' });
     }
 
     async function exportPDF() {
+        const btn = document.querySelector('.btn-pdf');
         const element = document.getElementById('pdf-export-container');
-        const opt = { margin: 0.3, filename: 'ChienLuoc28Ngay.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
-        html2pdf().set(opt).from(element).save();
+        let nameRaw = document.getElementById('custName').value.trim();
+        const nameFile = nameRaw !== "" ? nameRaw.replace(/\s+/g, '-') : "KhachHang";
+        
+        const originalScroll = window.scrollY;
+        window.scrollTo(0, 0);
+        
+        btn.innerHTML = "⏳ ĐANG XỬ LÝ PDF...";
+        btn.style.opacity = "0.7";
+        btn.style.pointerEvents = "none";
+
+        const opt = {
+            margin: [0.3, 0.3, 0.3, 0.3],
+            filename: `LichTrinh-28Ngay-${nameFile}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'], avoid: ['.keep-together', 'tr'] }
+        };
+
+        try {
+            await html2pdf().set(opt).from(element).save();
+        } catch (e) {
+            alert("Lỗi xuất PDF!");
+        } finally {
+            window.scrollTo(0, originalScroll); 
+            btn.innerHTML = "TẢI XUỐNG BẢN PDF CHO KHÁCH HÀNG";
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+        }
     }
 </script>
 </body>
